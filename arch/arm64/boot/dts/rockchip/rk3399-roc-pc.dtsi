@@ -18,9 +18,13 @@
 		stdout-path = "serial2:1500000n8";
 	};
 
-	backlight: backlight {
+	edp-backlight {
 		compatible = "pwm-backlight";
 		pwms = <&pwm0 0 25000 0>;
+		power-supply = <&dc_12v>;
+		enable-gpios = <&gpio1 RK_PD0 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&bl_en>;
 	};
 
 	clkin_gmac: external-gmac-clock {
@@ -199,6 +203,18 @@
 		regulator-min-microvolt = <450000>;
 		regulator-max-microvolt = <1400000>;
 		pwm-supply = <&vcc3v3_sys>;
+	};
+
+	vcc_lcd: vcc-lcd {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_lcd";
+		enable-active-high;
+		gpio = <&gpio2 RK_PA5 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&edp_vcc_en>;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		vin-supply = <&vcc3v3_sys>;
 	};
 };
 
@@ -597,6 +613,16 @@
 	buttons {
 		pwr_key_l: pwr-key-l {
 			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	edp {
+		bl_en: ble-en {
+			rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		edp_vcc_en: edp-vcc-en {
+			rockchip,pins = <2 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
